@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自媒体创作助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/7.0.5/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="title">
+                <span class="title-icon">🎬</span>
+                自媒体创作助手
+            </h1>
+            <p class="subtitle">一站式内容创作、语音合成与标题生成工具</p>
+        </header>
+
+        <div class="settings-panel">
+            <div class="api-settings">
+                <h3>API 配置</h3>
+                <div class="api-config-section">
+                    <div class="input-group">
+                        <label for="tts-api-key">
+                            Azure TTS API Key:
+                            <button class="help-btn" onclick="toggleHelp('azure-help')">❓</button>
+                        </label>
+                        <input type="password" id="tts-api-key" placeholder="请输入您的 Azure TTS API Key">
+                        <div class="region-selection">
+                            <label for="azure-region">Azure 区域:</label>
+                            <select id="azure-region">
+                                <option value="eastus">East US (推荐)</option>
+                                <option value="westus">West US</option>
+                                <option value="eastasia">East Asia</option>
+                                <option value="southeastasia">Southeast Asia</option>
+                                <option value="westeurope">West Europe</option>
+                            </select>
+                        </div>
+                        <small>推荐使用微软 Azure 认知服务 TTS，支持中文，语音自然，价格实惠</small>
+                        <div id="azure-help" class="help-content" style="display: none;">
+                            <h4>🔑 如何获取 Azure TTS API Key</h4>
+                            <ol>
+                                <li><strong>注册 Azure 账户</strong>
+                                    <br>访问 <a href="https://azure.microsoft.com/zh-cn/free/" target="_blank">Azure 免费账户</a> 进行注册
+                                    <br>新用户可获得 $200 免费额度
+                                </li>
+                                <li><strong>创建认知服务资源</strong>
+                                    <br>• 登录 <a href="https://portal.azure.com" target="_blank">Azure 门户</a>
+                                    <br>• 搜索"认知服务"或"Cognitive Services"
+                                    <br>• 点击"创建" → 选择"语音服务"
+                                    <br>• 选择订阅和资源组
+                                    <br>• 定价层选择"免费 F0"（每月50万字符免费）
+                                </li>
+                                <li><strong>获取 API 密钥</strong>
+                                    <br>• 创建完成后，进入资源页面
+                                    <br>• 在左侧菜单中选择"密钥和终结点"
+                                    <br>• 复制"密钥1"或"密钥2"
+                                    <br>• 记录"区域"信息（如：eastus）
+                                </li>
+                            </ol>
+                            <div class="pricing-info">
+                                <strong>💰 Azure TTS 定价：</strong>
+                                <br>• 免费层：每月50万字符
+                                <br>• 标准层：每100万字符 $15
+                                <br>• 支持多种高质量中文语音
+                            </div>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label for="deepseek-api-key">
+                            DeepSeek API Key:
+                            <button class="help-btn" onclick="toggleHelp('deepseek-help')">❓</button>
+                        </label>
+                        <input type="password" id="deepseek-api-key" placeholder="请输入您的 DeepSeek API Key">
+                        <small>用于生成智能标题和标签</small>
+                        <div id="deepseek-help" class="help-content" style="display: none;">
+                            <h4>🔑 如何获取 DeepSeek API Key</h4>
+                            <ol>
+                                <li><strong>注册 DeepSeek 账户</strong>
+                                    <br>访问 <a href="https://platform.deepseek.com" target="_blank">DeepSeek 开放平台</a>
+                                    <br>使用邮箱或手机号注册账户
+                                </li>
+                                <li><strong>完成实名认证</strong>
+                                    <br>• 登录后点击右上角头像
+                                    <br>• 选择"账户设置"进行实名认证
+                                    <br>• 上传身份证件完成验证
+                                </li>
+                                <li><strong>获取 API 密钥</strong>
+                                    <br>• 在控制台左侧菜单选择"API密钥"
+                                    <br>• 点击"创建API密钥"
+                                    <br>• 设置密钥名称和权限
+                                    <br>• 创建成功后复制密钥（仅显示一次）
+                                </li>
+                                <li><strong>充值余额</strong>
+                                    <br>• 在"余额管理"中进行充值
+                                    <br>• 最低充值金额通常为 ¥10
+                                </li>
+                            </ol>
+                            <div class="pricing-info">
+                                <strong>💰 DeepSeek 定价：</strong>
+                                <br>• 新用户通常有免费试用额度
+                                <br>• 按 token 计费，价格低廉
+                                <br>• 1万tokens 约 ¥0.14
+                                <br>• 生成标题大约消耗 500-1000 tokens
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="api-status">
+                    <div class="status-item">
+                        <span class="status-label">Azure TTS:</span>
+                        <span id="azure-status" class="status-indicator">未配置</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">DeepSeek:</span>
+                        <span id="deepseek-status" class="status-indicator">未配置</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="editor-section">
+                <div class="editor-header">
+                    <h2>📝 Markdown 编辑器</h2>
+                    <div class="editor-actions">
+                        <button id="export-md-btn" class="btn btn-secondary">导出MD</button>
+                        <button id="clear-btn" class="btn btn-secondary">清空</button>
+                        <button id="sample-btn" class="btn btn-secondary">示例文章</button>
+                    </div>
+                </div>
+                <div class="editor-container">
+                    <div class="editor-wrapper">
+                        <textarea id="markdown-editor" placeholder="在这里编写您的 Markdown 文章内容...
+
+示例：
+# 标题一
+## 标题二
+
+**粗体文本** *斜体文本*
+
+- 列表项目1
+- 列表项目2
+
+> 引用文本
+
+```javascript
+console.log('代码块');
+```
+
+[链接文本](https://example.com)"></textarea>
+                    </div>
+                    <div class="preview-wrapper">
+                        <div id="markdown-preview" class="markdown-preview"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tools-section">
+                <div class="tool-card">
+                    <h3>🎵 语音合成</h3>
+                    <div class="voice-settings">
+                        <div class="input-group">
+                            <label for="voice-select">选择语音:</label>
+                            <select id="voice-select">
+                                <option value="zh-CN-XiaoxiaoNeural">晓晓 (女声，温和)</option>
+                                <option value="zh-CN-YunxiNeural">云希 (男声，稳重)</option>
+                                <option value="zh-CN-YunyangNeural">云扬 (男声，新闻)</option>
+                                <option value="zh-CN-XiaochenNeural">晓辰 (女声，甜美)</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label for="speech-rate">语速:</label>
+                            <input type="range" id="speech-rate" min="0.5" max="2" step="0.1" value="1">
+                            <span id="rate-value">1.0x</span>
+                        </div>
+                    </div>
+                    <button id="generate-audio-btn" class="btn btn-primary">
+                        <span class="btn-icon">🎤</span>
+                        生成音频
+                    </button>
+                    <div id="audio-result" class="result-area" style="display: none;">
+                        <audio id="generated-audio" controls></audio>
+                        <div class="audio-controls">
+                            <button id="download-audio-btn" class="btn btn-outline">下载音频</button>
+                            <button id="download-script-btn" class="btn btn-outline">下载脚本</button>
+                        </div>
+                        <div class="script-display">
+                            <h4>📜 字幕脚本预览</h4>
+                            <div id="script-preview" class="script-content"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tool-card">
+                    <h3>🏷️ 标题与标签生成</h3>
+                    <div class="platform-selection">
+                        <label>
+                            <input type="checkbox" value="xiaohongshu" checked> 小红书
+                        </label>
+                        <label>
+                            <input type="checkbox" value="wechat" checked> 微信公众号
+                        </label>
+                        <label>
+                            <input type="checkbox" value="bilibili" checked> 哔哩哔哩
+                        </label>
+                    </div>
+                    <button id="generate-titles-btn" class="btn btn-primary">
+                        <span class="btn-icon">✨</span>
+                        生成标题和标签
+                    </button>
+                    <div id="titles-result" class="result-area" style="display: none;">
+                        <div id="generated-titles"></div>
+                        <button id="copy-titles-btn" class="btn btn-outline">复制结果</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="progress-indicator" id="progress-indicator" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+            <p id="progress-text">正在处理...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
