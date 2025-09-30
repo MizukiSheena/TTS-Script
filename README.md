@@ -2,6 +2,8 @@
 
 一个功能强大的自媒体内容创作工具，集成了Markdown编辑、语音合成、时间戳脚本生成和智能标题生成功能。
 
+https://github.com/MizukiSheena/TTS-Script/blob/main/TTS-script.png
+
 ## 功能特点
 
 ### 📝 Markdown编辑器
